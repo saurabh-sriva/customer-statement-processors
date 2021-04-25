@@ -89,7 +89,7 @@ Response :
   - H2 database (In memory database)
   - JPA
   - JSON
-  - Spring Tool Suite 4
+  - Intellij IDEA
   
 #### Database Tables :
   
