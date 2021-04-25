@@ -10,6 +10,6 @@ import lombok.Data;
 
 @Data
 public class CustomerRecordValidationRequest {
-	@Valid
-	private List<CustomerRecordDTO> records;
+    @Valid
+    private List<CustomerRecordDTO> records;
 }

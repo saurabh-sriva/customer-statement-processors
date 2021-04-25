@@ -5,7 +5,7 @@ import customer.statement.processor.response.CustomerRecordValidationResponse;
 
 public interface CustomerRecordService {
 
-	public void saveCustomerRecord(CustomerRecordDTO customerRecord);
+    public void saveCustomerRecord(CustomerRecordDTO customerRecord);
 
-	public CustomerRecordValidationResponse validateRecord(CustomerRecordDTO record);
+    public CustomerRecordValidationResponse validateRecord(CustomerRecordDTO record);
 }

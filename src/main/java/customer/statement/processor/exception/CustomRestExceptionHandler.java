@@ -19,23 +19,23 @@ import customer.statement.processor.response.ValidationResultCode;
 @RestController
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(Exception.class)
-	public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
+    @ExceptionHandler(Exception.class)
+    public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
 
-		CustomerRecordValidationResponse response = new CustomerRecordValidationResponse(
-				ValidationResultCode.INTERNAL_SERVER_ERROR, Collections.emptyList());
+        CustomerRecordValidationResponse response = new CustomerRecordValidationResponse(
+                ValidationResultCode.INTERNAL_SERVER_ERROR, Collections.emptyList());
 
-		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
-	@Override
-	public final ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
+    @Override
+    public final ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                     HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		CustomerRecordValidationResponse response = new CustomerRecordValidationResponse(
-				ValidationResultCode.BAD_REQUEST, Collections.emptyList());
+        CustomerRecordValidationResponse response = new CustomerRecordValidationResponse(
+                ValidationResultCode.BAD_REQUEST, Collections.emptyList());
 
-		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-	}
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
 }
