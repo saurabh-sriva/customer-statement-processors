@@ -9,28 +9,30 @@ Sample JSON format of customer statement record is given below :
 
 ```json
 {
-   "records": [{
-            "transactionReference": 123456,
-            "accountNumber": "NLINGB124",
-            "startBalance": 100,
-            "mutation": -50,
-            "description": "description",
-            "endBalance": 50
-        },
-        {
-            "transactionReference": 1234567,
-            "accountNumber": "NLINGB1234",
-            "startBalance": 100,
-            "mutation": -50,
-            "description": "description",
-            "endBalance": 50
-        }
-       ]
-  }
+  "records": [
+    {
+      "transactionReference": 123456,
+      "accountNumber": "NLINGB124",
+      "startBalance": 100,
+      "mutation": -50,
+      "description": "description",
+      "endBalance": 50
+    },
+    {
+      "transactionReference": 1234567,
+      "accountNumber": "NLINGB1234",
+      "startBalance": 100,
+      "mutation": -50,
+      "description": "description",
+      "endBalance": 50
+    }
+  ]
+}
 
 ```
 
-Before to validate these records in the List,these JSON record need to be validated according to following validation rule.
+Before to validate these records in the List,these JSON record need to be validated according to following validation
+rule.
 
 - All transaction reference should be unique.
 - The end balance needs to be validated against the formula : `$ ( Start Balance +/- Mutation = End Balance )`
@@ -38,8 +40,7 @@ Before to validate these records in the List,these JSON record need to be valida
 ### Use Case
 
 - API accepts batch of records as a JSON list as a sample format given above.
-- Each records are validated according to validation rule as mentioned above.
-- API returns batch of response. Sample response as given below.
+- Each records are validated according to validation rule as mentioned above. Sample response as given below.
 
 ```json
 Response :
@@ -51,26 +52,6 @@ Response :
 {
 "reference": 12345679,
 "accountNumber": "NL12345"
-}
-]
-},
-{
-"result": "INCORRECT_END_BALANCE",
-"errorRecords": [
-{
-"reference": 1234567899,
-"accountNumber": "ABN12345"
-}
-]
-},
-{
-"result": "DUPLICATE_REFERENCE",
-"errorRecords": [
-{
-"reference": 12345678990,
-"accountNumber": "ABN1234561111111111111"
-}
-]
 }
 ]
 }
@@ -93,21 +74,6 @@ List of following technology stack is being used to develop this API.
 - JPA
 - JSON
 - Intellij IDEA
-
-#### Database Tables :
-
-Table Name : customer_record
-
-Schema     : customer_statement_schema
-
-| Colume Name            | Data Type     | Nullable |Constraint   |
-| -----------------------| ------------- |----------|-------------|
-| transaction_reference  | Bigint        | False    | Primary Key |
-| account_number         | varchar(50)   | False    |             |
-| description            | varchar(250)  | True     |             |
-| start_balance          | decimal(19,2) | False    |             |
-| mutation               | decimal(19,2) | False    |             |
-| end_balance            | decimal(19,2) | False    |             |
 
 ### cURL and Response for following validations :
 
@@ -189,26 +155,26 @@ curl --location --request POST 'http://localhost:8080/customerRecords' \
 ```json
 
 {
-    "responses": [
+  "responses": [
+    {
+      "result": "DUPLICATE_REFERENCE",
+      "errorRecords": [
         {
-            "result": "DUPLICATE_REFERENCE",
-            "errorRecords": [
-                {
-                    "reference": 123456,
-                    "accountNumber": "NLINGB124"
-                }
-            ]
-        },
-        {
-            "result": "DUPLICATE_REFERENCE",
-            "errorRecords": [
-                {
-                    "reference": 123456,
-                    "accountNumber": "ABN1234"
-                }
-            ]
+          "reference": 123456,
+          "accountNumber": "NLINGB124"
         }
-    ]
+      ]
+    },
+    {
+      "result": "DUPLICATE_REFERENCE",
+      "errorRecords": [
+        {
+          "reference": 123456,
+          "accountNumber": "ABN1234"
+        }
+      ]
+    }
+  ]
 }
 
 ```
@@ -236,17 +202,17 @@ curl --location --request POST 'http://localhost:8080/customerRecords' \
 
 ```json
 {
-    "responses": [
+  "responses": [
+    {
+      "result": "INCORRECT_END_BALANCE",
+      "errorRecords": [
         {
-            "result": "INCORRECT_END_BALANCE",
-            "errorRecords": [
-                {
-                    "reference": 12345678,
-                    "accountNumber": "NLINGB1245"
-                }
-            ]
+          "reference": 12345678,
+          "accountNumber": "NLINGB1245"
         }
-    ]
+      ]
+    }
+  ]
 }
 
 ```

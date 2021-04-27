@@ -5,10 +5,9 @@ import customer.statement.processor.exception.CustomerRecordValidationException;
 import customer.statement.processor.response.CustomerRecordValidationResponse;
 import customer.statement.processor.response.ErrorRecord;
 import customer.statement.processor.response.ValidationResultCode;
-import customer.statement.processor.utils.CustomerStatementUtils;
+import customer.statement.processor.utils.CustomerRecordProcessorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,9 +25,6 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
     private static final String CUSTOMER_RECORD_DUPLICATE_REFERENCE_INCORRECT_END_BALANCE = "Customer Record has duplicate reference and In correct balance ";
     private static final String CUSTOMER_RECORD_BAD_REQUEST = "Customer Record is empty";
 
-    @Autowired
-    private CustomerStatementUtils customerStatementUtils;
-
     /**
      * This method is used to Validate the customer statement records.
      */
@@ -40,8 +36,8 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
             throw new CustomerRecordValidationException(ValidationResultCode.BAD_REQUEST, new ArrayList<>());
         }
 
-        final Set<CustomerRecordDTO> customerStmtDuplicateRec = customerStatementUtils.getCustomerStatementDuplicatesRecords(records);
-        final Set<CustomerRecordDTO> incorrectBalanceRecords = customerStatementUtils.getIncorrectBalanceRecords(records);
+        final Set<CustomerRecordDTO> customerStmtDuplicateRec = CustomerRecordProcessorUtils.getCustomerStatementDuplicatesRecords(records);
+        final Set<CustomerRecordDTO> incorrectBalanceRecords = CustomerRecordProcessorUtils.getIncorrectBalanceRecords(records);
 
         if (CollectionUtils.isEmpty(customerStmtDuplicateRec) && CollectionUtils.isEmpty(incorrectBalanceRecords)) {
 
@@ -73,11 +69,12 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
         final List<ErrorRecord> errorRecords = new ArrayList<>();
         ErrorRecord errorRecord = new ErrorRecord();
 
-        for (final CustomerRecordDTO rec : records) {
+        records.forEach(rec -> {
             errorRecord.setAccountNumber(rec.getAccountNumber());
             errorRecord.setReference(rec.getTransactionReference());
             errorRecords.add(errorRecord);
-        }
+        });
+
 
         return errorRecords;
     }

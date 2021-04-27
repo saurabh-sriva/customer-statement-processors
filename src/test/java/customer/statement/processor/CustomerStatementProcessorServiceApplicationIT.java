@@ -8,8 +8,6 @@ import customer.statement.processor.utils.TestFileEnum;
 import customer.statement.processor.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -25,11 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = CustomerStatementProcessorServiceApplication.class)
-class CustomerStatementProcessorServiceApplicationTests {
-
-    private static final Logger logger = LoggerFactory.getLogger(CustomerStatementProcessorServiceApplicationTests.class);
-    private static final String EXCEPTION_MESSAGE_IN_METHOD_ASJSONSTRING = "Exception occured in method asJsonString";
-    private static final String EXCEPTION_MESSAGE_IN_METHOD_ASOBJECT = "Exception occured in method asObject";
+class CustomerStatementProcessorServiceApplicationIT {
 
     @LocalServerPort
     private int port;

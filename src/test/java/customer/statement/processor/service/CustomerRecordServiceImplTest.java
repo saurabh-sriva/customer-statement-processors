@@ -3,15 +3,14 @@ package customer.statement.processor.service;
 import customer.statement.processor.dto.CustomerRecordDTO;
 import customer.statement.processor.response.CustomerRecordValidationResponse;
 import customer.statement.processor.response.ValidationResultCode;
-import customer.statement.processor.utils.CustomerStatementUtils;
-import org.junit.jupiter.api.BeforeEach;
+import customer.statement.processor.utils.CustomerRecordProcessorUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,11 +26,9 @@ class CustomerRecordServiceImplTest {
     @InjectMocks
     private CustomerRecordServiceImpl service;
 
-    @BeforeEach
-    void setup() {
+    @Mock
+    private CustomerRecordProcessorUtils customerRecordProcessorUtils;
 
-        ReflectionTestUtils.setField(service, "customerStatementUtils", new CustomerStatementUtils());
-    }
 
     @Test
     void testWhenThereAreNoDuplicateRefAndCorrectBalanceThenReturnSuccess() {
