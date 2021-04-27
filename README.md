@@ -30,7 +30,7 @@ Sample JSON format of customer statement record is given below :
 
 ```
 
-Before to save this record in database,these JSON record need to be validated according to following validation rule.
+Before to validate these records in the List,these JSON record need to be validated according to following validation rule.
 
 - All transaction reference should be unique.
 - The end balance needs to be validated against the formula : `$ ( Start Balance +/- Mutation = End Balance )`
@@ -38,7 +38,7 @@ Before to save this record in database,these JSON record need to be validated ac
 ### Use Case
 
 - API accepts batch of records as a JSON list as a sample format given above.
-- Each records is validated according to validation rule as mentioned above.
+- Each records are validated according to validation rule as mentioned above.
 - API returns batch of response. Sample response as given below.
 
 ```json
@@ -88,9 +88,8 @@ List of following technology stack is being used to develop this API.
 
 - Maven
 - Java 8
-- Jupiter (for Junit testing)
+- Junit
 - Spring boot
-- H2 database (In memory database)
 - JPA
 - JSON
 - Intellij IDEA
@@ -327,17 +326,6 @@ Response :
 ]
 }
 ```
-
-#### Check Records in tables :
-
-To validate the records in H2 database, please enter the following URL in browser, enter the following details and click
-on Connect button.
-
-- URL : http://localhost:8080/h2-console/login.jsp?jsessionid=e9a998910673fecf437d7565b869f2f1
-- Driver Class : org.h2.Driver
-- JDBC URL  : jdbc:h2:mem:test
-- User Name : sa
-- Password  :
 
 ### API Testing with Junit Suite
 
