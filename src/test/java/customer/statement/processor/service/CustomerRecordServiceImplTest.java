@@ -17,6 +17,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
 class CustomerRecordServiceImplTest {
@@ -27,6 +29,7 @@ class CustomerRecordServiceImplTest {
 
     @BeforeEach
     void setup() {
+
         ReflectionTestUtils.setField(service, "customerStatementUtils", new CustomerStatementUtils());
     }
 
@@ -42,9 +45,6 @@ class CustomerRecordServiceImplTest {
         records.add(record2);
         CustomerRecordValidationResponse resp = service.validateRecords(records);
         assertEquals(ValidationResultCode.SUCCESSFUL, resp.getResult());
-    }
-
-    private void assertEquals(ValidationResultCode successful, ValidationResultCode result) {
     }
 
     @Test

@@ -3,6 +3,4 @@ server:
 spring:
   application:
     name: customer-statement-processor-service
-  spring:
-    main:
-      web-application-type: none
+

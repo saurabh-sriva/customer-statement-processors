@@ -1,11 +1,13 @@
 package customer.statement.processor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import customer.statement.processor.dto.CustomerRecordDTO;
 import customer.statement.processor.request.CustomerRecordValidationRequest;
 import customer.statement.processor.response.CustomerRecordValidationResponse;
 import customer.statement.processor.response.ValidationResultCode;
 import customer.statement.processor.utils.TestFileEnum;
 import customer.statement.processor.utils.TestUtils;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -20,6 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -79,6 +84,14 @@ class CustomerStatementProcessorServiceApplicationTests {
         resp = getResponse(entity);
         assertEquals(ValidationResultCode.INCORRECT_END_BALANCE, resp.getBody().getResult());
     }
+
+    @Test
+    void testWhenRequestIsEmptyThenReturnEmptyRequest() throws Exception {
+        HttpEntity<CustomerRecordValidationRequest> entity = createTestRecord(TestFileEnum.TEST_EMPTY_REQUEST);
+        resp = getResponse(entity);
+        assertEquals(ValidationResultCode.BAD_REQUEST, resp.getBody().getResult());
+    }
+
 
     private ResponseEntity<CustomerRecordValidationResponse> getResponse(HttpEntity<CustomerRecordValidationRequest> entity) {
         final String END_POINT = "http://localhost:" + port + "/customerRecords";
