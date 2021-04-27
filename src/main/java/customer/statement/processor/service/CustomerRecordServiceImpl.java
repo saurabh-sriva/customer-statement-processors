@@ -20,23 +20,26 @@ import java.util.Set;
 @Service
 public class CustomerRecordServiceImpl implements CustomerRecordService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomerRecordServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerRecordServiceImpl.class);
     private static final String CUSTOMER_RECORD_DUPLICATE_REFERENCE = "Customer Record has duplicate reference and correct balance";
     private static final String CUSTOMER_RECORD_INCORRECT_END_BALANCE = "Customer Record has duplicate reference and Incorrect balance";
     private static final String CUSTOMER_RECORD_DUPLICATE_REFERENCE_INCORRECT_END_BALANCE = "Customer Record has duplicate reference and In correct balance ";
+    private static final String CUSTOMER_RECORD_BAD_REQUEST = "Customer Record is empty";
 
     @Autowired
     private CustomerStatementUtils customerStatementUtils;
 
     /**
-     * This method is used to Validate the customer record.
+     * This method is used to Validate the customer statement records.
      */
     @Override
     public CustomerRecordValidationResponse validateRecords(final List<CustomerRecordDTO> records) {
 
         if (CollectionUtils.isEmpty(records)) {
+            LOGGER.info(CUSTOMER_RECORD_BAD_REQUEST);
             throw new CustomerRecordValidationException(ValidationResultCode.BAD_REQUEST, new ArrayList<>());
         }
+
         final Set<CustomerRecordDTO> customerStmtDuplicateRec = customerStatementUtils.getCustomerStatementDuplicatesRecords(records);
         final Set<CustomerRecordDTO> incorrectBalanceRecords = customerStatementUtils.getIncorrectBalanceRecords(records);
 
@@ -82,7 +85,7 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
     private CustomerRecordValidationResponse createCustomerRecordValidationResponse(
             final List<ErrorRecord> records, final String loggerMessage,
             final ValidationResultCode validationResultCode) {
-        logger.info(loggerMessage);
+        LOGGER.info(loggerMessage);
         return new CustomerRecordValidationResponse(validationResultCode, records);
     }
 
