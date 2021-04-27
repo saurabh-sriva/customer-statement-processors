@@ -1,0 +1,36 @@
+{
+  "records": [
+    {
+      "transactionReference": 5567,
+      "accountNumber": "NL95INGB1234",
+      "startBalance": 8500.00,
+      "mutation": -100.00,
+      "description": "description",
+      "endBalance": 7500.00
+    },
+    {
+      "transactionReference": 5568,
+      "accountNumber": "NL95RABO1234",
+      "startBalance": 7500.00,
+      "mutation": -2000.00,
+      "description": "description",
+      "endBalance": 5000.00
+    },
+    {
+      "transactionReference": 5569,
+      "accountNumber": "NL95ABN1234",
+      "startBalance": 7500.00,
+      "mutation": 1000.00,
+      "description": "description",
+      "endBalance": 8500.00
+    },
+    {
+      "transactionReference": 55610,
+      "accountNumber": "NL95RABO678",
+      "startBalance": 7500.00,
+      "mutation": -100,
+      "description": "description",
+      "endBalance": 400.00
+    }
+  ]
+}

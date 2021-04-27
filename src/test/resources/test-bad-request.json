@@ -1,0 +1,35 @@
+{
+  "records": [
+    {
+      "transactionReference": 1234,
+      "accountNumber": "NL95INGB1234",
+      "startBalance": 1500.00,
+      "mutation": -100.00,
+      "description": "description"
+    },
+    {
+      "transactionReference": 1245,
+      "accountNumber": "NL95INGB1234",
+      "startBalance": 9500.00,
+      "mutation": -2000.00,
+      "description": "description",
+      "endBalance": 3500.00
+    },
+    {
+      "transactionReference": 1245,
+      "accountNumber": "NL95INGB1234",
+      "startBalance": 8800.00,
+      "mutation": -1000.00,
+      "description": "jan days",
+      "endBalance": 6500.00
+    },
+    {
+      "transactionReference": 1288,
+      "accountNumber": "NL95INGB1234",
+      "startBalance": 9500.00,
+      "mutation": -100,
+      "description": "jan days",
+      "endBalance": 9400.00
+    }
+  ]
+}

@@ -1,12 +1,10 @@
 package customer.statement.processor.request;
 
-import java.util.List;
+import customer.statement.processor.dto.CustomerRecordDTO;
+import lombok.Data;
 
 import javax.validation.Valid;
-
-import customer.statement.processor.dto.CustomerRecordDTO;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.util.List;
 
 @Data
 public class CustomerRecordValidationRequest {

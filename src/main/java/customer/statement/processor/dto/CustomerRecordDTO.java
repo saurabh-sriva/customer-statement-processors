@@ -2,14 +2,15 @@ package customer.statement.processor.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.math.BigDecimal;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CustomerRecordDTO {
 
     @NotNull
@@ -31,8 +32,4 @@ public class CustomerRecordDTO {
     @NotNull
     private BigDecimal endBalance;
 
-    public CustomerRecordDTO withEndBalance(BigDecimal endBalance) {
-        setEndBalance(endBalance);
-        return this;
-    }
 }

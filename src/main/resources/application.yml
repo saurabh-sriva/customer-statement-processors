@@ -3,13 +3,6 @@ server:
 spring:
   application:
     name: customer-statement-processor-service
-  datasource:
-    url: "jdbc:h2:mem:test;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS customer_statement_schema"
-    password:
-    username: sa
-    driver-class-name: org.h2.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
+  spring:
+    main:
+      web-application-type: none

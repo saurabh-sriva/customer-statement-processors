@@ -1,95 +1,89 @@
 package customer.statement.processor.service;
 
-import java.util.Collections;
-
-import org.modelmapper.ModelMapper;
+import customer.statement.processor.dto.CustomerRecordDTO;
+import customer.statement.processor.exception.CustomerRecordValidationException;
+import customer.statement.processor.response.CustomerRecordValidationResponse;
+import customer.statement.processor.response.ErrorRecord;
+import customer.statement.processor.response.ValidationResultCode;
+import customer.statement.processor.utils.CustomerStatementUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import customer.statement.processor.dto.CustomerRecordDTO;
-import customer.statement.processor.model.CustomerRecord;
-import customer.statement.processor.repository.CustomerRecordRepository;
-import customer.statement.processor.response.CustomerRecordValidationResponse;
-import customer.statement.processor.response.ErrorRecord;
-import customer.statement.processor.response.ValidationResultCode;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 @Service
-@Transactional
 public class CustomerRecordServiceImpl implements CustomerRecordService {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerRecordServiceImpl.class);
     private static final String CUSTOMER_RECORD_DUPLICATE_REFERENCE = "Customer Record has duplicate reference and correct balance";
     private static final String CUSTOMER_RECORD_INCORRECT_END_BALANCE = "Customer Record has duplicate reference and Incorrect balance";
     private static final String CUSTOMER_RECORD_DUPLICATE_REFERENCE_INCORRECT_END_BALANCE = "Customer Record has duplicate reference and In correct balance ";
-    private static final String CUSTOMER_RECORD_SUCCESSFUL = "Customer Record has no duplicate reference and correct end balance";
 
     @Autowired
-    private CustomerRecordRepository customerRecordRepository;
-
-    /**
-     * This method is used to save the Customer Record in database
-     */
-    @Override
-    public void saveCustomerRecord(CustomerRecordDTO customerRecordDTO) {
-
-        CustomerRecord customerRecord = getCustomerRecord(customerRecordDTO);
-        customerRecordRepository.save(customerRecord);
-    }
+    private CustomerStatementUtils customerStatementUtils;
 
     /**
      * This method is used to Validate the customer record.
      */
     @Override
-    public CustomerRecordValidationResponse validateRecord(CustomerRecordDTO customerRecordDTO) {
+    public CustomerRecordValidationResponse validateRecords(final List<CustomerRecordDTO> records) {
 
-        boolean isReferenceDuplicate = isDuplicate(customerRecordDTO);
-        boolean isBalanceCorrect = isValidMutation(customerRecordDTO);
+        if (CollectionUtils.isEmpty(records)) {
+            throw new CustomerRecordValidationException(ValidationResultCode.BAD_REQUEST, new ArrayList<>());
+        }
+        final Set<CustomerRecordDTO> customerStmtDuplicateRec = customerStatementUtils.getCustomerStatementDuplicatesRecords(records);
+        final Set<CustomerRecordDTO> incorrectBalanceRecords = customerStatementUtils.getIncorrectBalanceRecords(records);
 
-        if (isReferenceDuplicate && isBalanceCorrect) {
+        if (CollectionUtils.isEmpty(customerStmtDuplicateRec) && CollectionUtils.isEmpty(incorrectBalanceRecords)) {
 
-            return createCustomerRecordValidationResponse(customerRecordDTO, CUSTOMER_RECORD_DUPLICATE_REFERENCE,
-                    ValidationResultCode.DUPLICATE_REFERENCE);
+            return new CustomerRecordValidationResponse(ValidationResultCode.SUCCESSFUL, Collections.emptyList());
 
-        } else if (!isReferenceDuplicate && !isBalanceCorrect) {
+        } else if (!CollectionUtils.isEmpty(customerStmtDuplicateRec) && !CollectionUtils.isEmpty(incorrectBalanceRecords)) {
 
-            return createCustomerRecordValidationResponse(customerRecordDTO, CUSTOMER_RECORD_INCORRECT_END_BALANCE,
-                    ValidationResultCode.INCORRECT_END_BALANCE);
+            final List<ErrorRecord> errorRecords = createErrorRecords(customerStmtDuplicateRec);
+            errorRecords.addAll(createErrorRecords(incorrectBalanceRecords));
+            return createCustomerRecordValidationResponse(errorRecords, CUSTOMER_RECORD_DUPLICATE_REFERENCE_INCORRECT_END_BALANCE, ValidationResultCode.DUPLICATE_REFERENCE_INCORRECT_END_BALANCE);
 
-        } else if (isReferenceDuplicate) {
+        } else if (!CollectionUtils.isEmpty(customerStmtDuplicateRec)) {
 
-            return createCustomerRecordValidationResponse(customerRecordDTO,
-                    CUSTOMER_RECORD_DUPLICATE_REFERENCE_INCORRECT_END_BALANCE,
-                    ValidationResultCode.DUPLICATE_REFERENCE_INCORRECT_END_BALANCE);
+            final List<ErrorRecord> errorRecords = createErrorRecords(customerStmtDuplicateRec);
+            return createCustomerRecordValidationResponse(errorRecords, CUSTOMER_RECORD_DUPLICATE_REFERENCE, ValidationResultCode.DUPLICATE_REFERENCE);
+
+        } else { // handle incorrectBalanceRecords in this last branch.
+
+            final List<ErrorRecord> errorRecords = createErrorRecords(incorrectBalanceRecords);
+            return createCustomerRecordValidationResponse(errorRecords, CUSTOMER_RECORD_INCORRECT_END_BALANCE, ValidationResultCode.INCORRECT_END_BALANCE);
         }
 
-        logger.info(CUSTOMER_RECORD_SUCCESSFUL);
-        return new CustomerRecordValidationResponse(ValidationResultCode.SUCCESSFUL, Collections.emptyList());
+
     }
 
-    private boolean isDuplicate(final CustomerRecordDTO customerRecordDTO) {
 
-        return customerRecordRepository.findById(customerRecordDTO.getTransactionReference()).isPresent();
-    }
+    private List<ErrorRecord> createErrorRecords(Set<CustomerRecordDTO> records) {
 
-    private boolean isValidMutation(final CustomerRecordDTO customerRecordDTO) {
+        final List<ErrorRecord> errorRecords = new ArrayList<>();
+        ErrorRecord errorRecord = new ErrorRecord();
 
-        return customerRecordDTO.getEndBalance()
-                .compareTo(customerRecordDTO.getStartBalance().add(customerRecordDTO.getMutation())) == 0;
+        for (final CustomerRecordDTO rec : records) {
+            errorRecord.setAccountNumber(rec.getAccountNumber());
+            errorRecord.setReference(rec.getTransactionReference());
+            errorRecords.add(errorRecord);
+        }
+
+        return errorRecords;
     }
 
     private CustomerRecordValidationResponse createCustomerRecordValidationResponse(
-            final CustomerRecordDTO customerRecordDTO, final String loggerMessage,
+            final List<ErrorRecord> records, final String loggerMessage,
             final ValidationResultCode validationResultCode) {
-
-        ErrorRecord record = ErrorRecord.buildFrom(customerRecordDTO);
         logger.info(loggerMessage);
-        return new CustomerRecordValidationResponse(validationResultCode, Collections.singletonList(record));
+        return new CustomerRecordValidationResponse(validationResultCode, records);
     }
 
-    private CustomerRecord getCustomerRecord(CustomerRecordDTO customerRecordDTO) {
-        return new ModelMapper().map(customerRecordDTO, CustomerRecord.class);
-    }
 }

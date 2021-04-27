@@ -10,5 +10,4 @@ public class CustomerStatementProcessorServiceApplication {
         SpringApplication.run(CustomerStatementProcessorServiceApplication.class, args);
 
     }
-
 }
