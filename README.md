@@ -102,9 +102,7 @@ List of following technology stack is being used to develop this API.
 - JSON
 - Intellij IDEA
 
-### cURL and Response for following validations :
-
-Sample cURL for validations to test the API code.
+### Response for following validations :
 
 - **Validation Rule 1 :** When there are no duplicate reference and correct end balance
 
