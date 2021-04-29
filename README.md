@@ -44,18 +44,45 @@ rule.
 
 ```json
 Response :
+
 {
-"responses": [
-{
-"result": "DUPLICATE_REFERENCE",
-"errorRecords": [
-{
-"reference": 12345679,
-"accountNumber": "NL12345"
-}
-]
+    "result": "SUCCESSFUL",
+    "errorRecords": []
 }
 
+{
+    "result": "INCORRECT_END_BALANCE",
+    "errorRecords": [
+        {
+            "reference": 1234567,
+            "accountNumber": "NLINGB1234"
+        }
+    ]
+}
+
+{
+    "result": "DUPLICATE_REFERENCE",
+    "errorRecords": [
+        {
+            "reference": 1234567,
+            "accountNumber": "NLINGB1234"
+        }
+    ]
+}
+
+{
+    "result": "DUPLICATE_REFERENCE_INCORRECT_END_BALANCE",
+    "errorRecords": [
+        {
+            "reference": 1234567,
+            "accountNumber": "NLINGB1234"
+        },
+        {
+            "reference": 1234567,
+            "accountNumber": "NLINGB1234"
+        }
+    ]
+}
 ```
 
 ### Pre Conditions
@@ -82,99 +109,72 @@ Sample cURL for validations to test the API code.
 - **Validation Rule 1 :** When there are no duplicate reference and correct end balance
 
 ```json
-
-curl --location --request POST 'http://localhost:8080/customerRecords' \
---header 'Content-Type: application/json' \
---data-raw '{
-"records": [
 {
-"transactionReference": 123456,
-"accountNumber": "NLINGB124",
-"startBalance": 100,
-"mutation": -50,
-"description": "description",
-"endBalance": 50
-},
-{
-"transactionReference": 1234567,
-"accountNumber": "ABN1234",
-"startBalance": 100,
-"mutation": -50,
-"description": "description",
-"endBalance": 50
+    "records": [
+        {
+            "transactionReference": 1234567,
+            "accountNumber": "NLINGB1234",
+            "startBalance": 100,
+            "mutation": -50,
+            "description": "description",
+            "endBalance": 50
+        },
+        {
+            "transactionReference": 123456,
+            "accountNumber": "NLRABO1234",
+            "startBalance": 100,
+            "mutation": -50,
+            "description": "description",
+            "endBalance": 50
+        }
+    ]
 }
-]
-}'
 
 ```
 
 ```json
 Response :
 {
-"responses": [
-{
-"result": "SUCCESSFUL",
-"errorRecords": []
-},
-{
-"result": "SUCCESSFUL",
-"errorRecords": []
-}
-]
+    "result": "SUCCESSFUL",
+    "errorRecords": []
 }
 ```
 
 - **Validation Rule 2 :** When there are duplicate reference and correct balance
 
 ```json
-curl --location --request POST 'http://localhost:8080/customerRecords' \
---header 'Content-Type: application/json' \
---data-raw '{
-"records": [
 {
-"transactionReference": 123456,
-"accountNumber": "NLINGB124",
-"startBalance": 100,
-"mutation": -50,
-"description": "description",
-"endBalance": 50
-},
-{
-"transactionReference": 123456,
-"accountNumber": "ABN1234",
-"startBalance": 100,
-"mutation": -50,
-"description": "description",
-"endBalance": 50
+    "records": [
+        {
+            "transactionReference": 1234567,
+            "accountNumber": "NLINGB1234",
+            "startBalance": 100,
+            "mutation": -50,
+            "description": "description",
+            "endBalance": 50
+        },
+        {
+            "transactionReference": 1234567,
+            "accountNumber": "NLINGB1234",
+            "startBalance": 100,
+            "mutation": -50,
+            "description": "description",
+            "endBalance": 50
+        }
+    ]
 }
-]
-}'
-
 ```
 
 ```json
-
+Rsponse :
 {
-  "responses": [
-    {
-      "result": "DUPLICATE_REFERENCE",
-      "errorRecords": [
+    "result": "DUPLICATE_REFERENCE",
+    "errorRecords": [
         {
-          "reference": 123456,
-          "accountNumber": "NLINGB124"
+            "reference": 1234567,
+            "accountNumber": "NLINGB1234"
         }
-      ]
-    },
-    {
-      "result": "DUPLICATE_REFERENCE",
-      "errorRecords": [
-        {
-          "reference": 123456,
-          "accountNumber": "ABN1234"
-        }
-      ]
-    }
-  ]
+    ]
 }
 
 ```
@@ -182,25 +182,31 @@ curl --location --request POST 'http://localhost:8080/customerRecords' \
 - **Validation Rule 3 :** When there are no duplicate reference and Incorrect balance
 
 ```json
-
-curl --location --request POST 'http://localhost:8080/customerRecords' \
---header 'Content-Type: application/json' \
---data-raw '{
-"records": [
 {
-"transactionReference": 12345678,
-"accountNumber": "NLINGB1245",
-"startBalance": 100,
-"mutation": -50,
-"description": "description",
-"endBalance": 250
+    "records": [
+        {
+            "transactionReference": 123456,
+            "accountNumber": "NLINGB1234",
+            "startBalance": 100,
+            "mutation": -50,
+            "description": "description",
+            "endBalance": 50
+        },
+        {
+            "transactionReference": 1234567,
+            "accountNumber": "NLRABO1234",
+            "startBalance": 100,
+            "mutation": -50,
+            "description": "description",
+            "endBalance": 150
+        }
+    ]
 }
-]
-}'
 
 ```
 
 ```json
+Response :
 {
   "responses": [
     {
@@ -220,42 +226,48 @@ curl --location --request POST 'http://localhost:8080/customerRecords' \
 - **Validation Rule 4 :** When there are duplicate reference and Incorrect balance
 
 ```json
-
-curl --location --request POST 'http://localhost:8080/customerRecords' \
---header 'Content-Type: application/json' \
---data-raw '{
-"records": [
 {
-"transactionReference": 123456,
-"accountNumber": "NLINGB124",
-"startBalance": 100,
-"mutation": -50,
-"description": "description",
-"endBalance": 250
+    "records": [
+        {
+            "transactionReference": 123456,
+            "accountNumber": "NLINGB1234",
+            "startBalance": 100,
+            "mutation": -50,
+            "description": "description",
+            "endBalance": 50
+        },
+        {
+            "transactionReference": 123456,
+            "accountNumber": "NLINGB1234",
+            "startBalance": 100,
+            "mutation": -50,
+            "description": "description",
+            "endBalance": 150
+        }
+    ]
 }
-]
-}'
+
 
 ```
 
 ```json
 Response :
 {
-"responses": [
-{
-"result": "DUPLICATE_REFERENCE_INCORRECT_END_BALANCE",
-"errorRecords": [
-{
-"reference": 123456,
-"accountNumber": "NLINGB124"
-},
-{
-"reference": 123456,
-"accountNumber": "NLINGB124"
-}
-]
-}
-]
+    "result": "DUPLICATE_REFERENCE_INCORRECT_END_BALANCE",
+    "errorRecords": [
+        {
+            "reference": 123456,
+            "accountNumber": "NLINGB1234"
+        },
+        {
+            "reference": 123456,
+            "accountNumber": "NLINGB1234"
+        },
+        {
+            "reference": 123456,
+            "accountNumber": "NLINGB1234"
+        }
+    ]
 }
 
 ```
